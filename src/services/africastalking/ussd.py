@@ -61,7 +61,7 @@ class USSDMenu:
         return "END Session expired. Please try again."
 
     # ---------- Menu Handlers ----------
-    def main_menu(self, session_id):
+    def main_menu(self, session_id: str):
         response = "CON Welcome to InFlow360 Invoice Service\n"
         response += "1. Check outstanding payments\n"
         response += "2. Make Payment\n"
@@ -76,7 +76,7 @@ class USSDMenu:
                 session_id,
                 {"step": "payment_menu", "outstanding": outstanding},
             )
-            return f"CON Outstanding payment: ${outstanding}\n1. Pay now\n2. Back"
+            return f"CON Outstanding payment: TSH {outstanding}\n1. Pay now\n2. Back"
 
         if user_input == "2":
             self.session_manager.update_session(session_id, {"step": "payment_menu"})
@@ -96,7 +96,7 @@ class USSDMenu:
             # Initialize payment here
             self.session_manager.end_session(session_id)
             # Initialize payment request.
-            return f"END Payment of ${amount} initialized. You'll receive confirmation shortly."
+            return f"END Payment of TSH {amount} initialized. You'll receive confirmation shortly."
 
         if user_input == "2":
             return self.main_menu(session_id)

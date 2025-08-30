@@ -37,7 +37,7 @@ async def handle_ussd(request: Request) -> str:
     text = form_data.get("text", "default")
     session_id = form_data.get("sessionId")
     phone_number = form_data.get("phoneNumber")
-    service_code = form_data.get("serviceCode")
+    # service_code = form_data.get("serviceCode")
 
     user_input = text.strip().split("*")[-1] if text else ""
     response = ussd_menu.handle_request(
@@ -45,8 +45,8 @@ async def handle_ussd(request: Request) -> str:
         user_input=user_input,
         phone_number=phone_number,
     )
-    print(response, service_code, phone_number, session_id, user_input)
-    return str(response)
+
+    return Response(str(response), media_type="text/plain")
 
 
 @router.post("/otp")
