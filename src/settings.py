@@ -63,6 +63,7 @@ class Settings(BaseSettings):
     AT_USERNAME: str
     AT_API_KEY: str
     AT_SENDER_ID: Optional[str] = Field(default="16038")
+    ZENOPAY_API_KEY: str
 
     @property
     def logger(self):

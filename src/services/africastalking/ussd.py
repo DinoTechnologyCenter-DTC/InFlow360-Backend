@@ -25,7 +25,9 @@ class SessionManager:
 
 
 class USSDMenu:
-    def __init__(self, session_manager):
+    """USSD Menu manager."""
+
+    def __init__(self, session_manager: SessionManager):
         self.session_manager = session_manager
 
     def handle_request(
@@ -60,14 +62,14 @@ class USSDMenu:
 
     # ---------- Menu Handlers ----------
     def main_menu(self, session_id):
-        response = "CON Welcome to Payment Service\n"
+        response = "CON Welcome to InFlow360 Invoice Service\n"
         response += "1. Check outstanding payments\n"
         response += "2. Make Payment\n"
         response += "3. Exit"
         self.session_manager.update_session(session_id, {"step": "main_menu_response"})
         return response
 
-    def main_menu_response(self, session_id, user_input):
+    def main_menu_response(self, session_id: str, user_input: str):
         if user_input == "1":
             outstanding = 150  # Example: fetch from DB
             self.session_manager.update_session(
