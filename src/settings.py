@@ -60,6 +60,9 @@ class Settings(BaseSettings):
     )
 
     DATABASE: DataBaseConfig = Field(default_factory=DataBaseConfig)
+    AT_USERNAME: str
+    AT_API_KEY: str
+    AT_SENDER_ID: Optional[str] = Field(default="16038")
 
     @property
     def logger(self):

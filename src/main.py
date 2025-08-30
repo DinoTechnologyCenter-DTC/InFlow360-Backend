@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import and include routers
-from routes import auth, invoice
+from src.routes import africastalking, auth, invoice
 
 app = FastAPI()
 
@@ -23,6 +23,9 @@ async def root():
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(invoice.router, prefix="/api/invoices", tags=["Invoices"])
+app.include_router(
+    africastalking.router, prefix="/africastalking", tags=["AfricasTalking"]
+)
 
 if __name__ == "__main__":
     import uvicorn
