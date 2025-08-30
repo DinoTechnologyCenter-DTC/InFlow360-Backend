@@ -1,0 +1,171 @@
+erDiagram
+    Users {
+        uuid id PK
+        varchar email UK "UNIQUE"
+        varchar password_hash
+        varchar name
+        varchar phone "UNIQUE"
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    Organizations {
+        uuid id PK
+        uuid owner_id FK
+        varchar name
+        varchar description
+        varchar business_type
+        varchar tax_id
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    UserOrganizations {
+        uuid id PK
+        uuid user_id FK
+        uuid organization_id FK
+        varchar role "admin, manager, staff"
+        boolean is_active
+        timestamp created_at
+    }
+
+    Stores {
+        uuid id PK
+        uuid organization_id FK
+        varchar name
+        varchar description
+        varchar store_code UK
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    Customers {
+        uuid id PK
+        uuid organization_id FK
+        varchar customer_code UK
+        varchar name
+        varchar email
+        varchar phone
+        varchar address_line1
+        varchar address_line2
+        varchar city
+        varchar state
+        varchar postal_code
+        varchar country
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    Services {
+        uuid id PK
+        uuid organization_id FK
+        varchar name
+        text description
+        decimal cost
+        varchar currency
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    Invoices {
+        uuid id PK
+        varchar invoice_number UK
+        uuid customer_id FK
+        uuid organization_id FK
+        uuid store_id FK
+        uuid created_by FK
+        decimal subtotal
+        decimal tax_amount
+        decimal total_amount
+        varchar currency
+        varchar status "draft, sent, paid, overdue, cancelled"
+        date issue_date
+        date due_date
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    InvoiceItems {
+        uuid id PK
+        uuid invoice_id FK
+        uuid service_id FK
+        varchar description
+        decimal quantity
+        decimal unit_price
+        decimal total_amount
+        timestamp created_at
+    }
+
+    Transactions {
+        uuid id PK
+        uuid invoice_id FK
+        uuid customer_id FK
+        varchar transaction_number UK
+        decimal amount
+        varchar currency
+        varchar payment_method "cash, card, bank_transfer, other"
+        varchar status "pending, completed, failed, refunded"
+        varchar reference_number
+        text notes
+        timestamp transaction_date
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    Reminders {
+        uuid id PK
+        uuid invoice_id FK
+        uuid customer_id FK
+        uuid sent_by FK
+        varchar type "email, sms, call"
+        varchar status "pending, sent, delivered, failed"
+        text message
+        timestamp sent_at
+        timestamp scheduled_for
+        timestamp created_at
+    }
+
+    AuditLogs {
+        uuid id PK
+        uuid user_id FK
+        uuid organization_id FK
+        varchar entity_type
+        uuid entity_id
+        varchar action "create, update, delete"
+        json old_values
+        json new_values
+        varchar ip_address
+        varchar user_agent
+        timestamp created_at
+    }
+
+    %% Relationships
+    Users ||--o{ Organizations : "owns"
+    Users ||--o{ UserOrganizations : "belongs_to"
+    Organizations ||--o{ UserOrganizations : "has_members"
+    Organizations ||--o{ Stores : "has"
+    Organizations ||--o{ Customers : "manages"
+    Organizations ||--o{ Services : "offers"
+    Organizations ||--o{ Invoices : "creates"
+    
+    Customers ||--o{ Invoices : "receives"
+    Stores ||--o{ Invoices : "issues"
+    Users ||--o{ Invoices : "created_by"
+    
+    Invoices ||--o{ InvoiceItems : "contains"
+    Services ||--o{ InvoiceItems : "itemized_as"
+    
+    Invoices ||--o{ Transactions : "paid_through"
+    Customers ||--o{ Transactions : "makes"
+    
+    Invoices ||--o{ Reminders : "triggers"
+    Customers ||--o{ Reminders : "sent_to"
+    Users ||--o{ Reminders : "sent_by"
+    
+    Users ||--o{ AuditLogs : "performs_action"
+    Organizations ||--o{ AuditLogs : "scope"
